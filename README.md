@@ -171,30 +171,51 @@ It combines enterprise topology design, VLAN segmentation, routing, DHCP, switch
 
 # 🌐 Network Architecture
 
-The topology consists of:
+The lab simulates a segmented enterprise network containing a **core switching layer, departmental access switches, an edge router, server infrastructure, wired endpoints, and wireless access points (APs)**.
 
 ```text
-                         ┌──────────────┐
-                         │     ISP      │
-                         └──────┬───────┘
-                                │
-                           Simulated WAN
-                                │
-                         ┌──────┴───────┐
-                         │    EDGE-R1   │
-                         │ Router/Layer │
-                         │   3 Gateway   │
-                         └──────┬───────┘
-                                │
-                             Trunk
-                                │
-                         ┌──────┴───────┐
-                         │   CORE-SW    │
-                         │ Cisco 3650   │
-                         └──────┬───────┘
-                                │
-       ┌────────────┬───────────┼───────────┬────────────┐
-       │            │           │           │            │
-   ┌───┴───┐    ┌───┴───┐   ┌──┴───┐   ┌──┴────┐   ┌───┴────┐
-   │ HR-SW │    │ IT-SW │   │FIN-SW│   │SALES-SW│  │SERVER-SW│
-   └───────┘    └───────┘   └──────┘   └────────┘  └─────────┘
+                                  ┌──────────────┐
+                                  │     ISP      │
+                                  │  Simulated   │
+                                  │     WAN      │
+                                  └──────┬───────┘
+                                         │
+                                  203.0.113.0/24
+                                         │
+                                  ┌──────┴───────┐
+                                  │    EDGE-R1    │
+                                  │ Router / GW   │
+                                  │ Inter-VLAN    │
+                                  │   Routing     │
+                                  └──────┬────────┘
+                                         │
+                                  802.1Q Trunk
+                                         │
+                              ┌──────────┴──────────┐
+                              │       CORE-SW       │
+                              │     Cisco 3650      │
+                              │   Core Switching    │
+                              └──────────┬──────────┘
+                                         │
+             ┌──────────────┬────────────┼────────────┬──────────────┐
+             │              │            │            │              │
+             │              │            │            │              │
+        ┌────┴────┐    ┌────┴────┐  ┌────┴─────┐ ┌───┴──────┐ ┌────┴─────┐
+        │  HR-SW  │    │  IT-SW  │  │ FINANCE  │ │ SALES-SW │ │SERVER-SW │
+        │ VLAN 10 │    │ VLAN 20 │  │   -SW    │ │ VLAN 40  │ │ VLAN 50  │
+        └────┬────┘    └────┬────┘  │ VLAN 30  │ └────┬─────┘ └────┬─────┘
+             │              │       └────┬─────┘       │            │
+        ┌────┴────┐    ┌────┴────┐       │        ┌────┴────┐  ┌────┴────┐
+        │  PCs /  │    │  PCs /  │  ┌────┴────┐  │  PCs /  │  │ Servers │
+        │ Devices │    │ Devices │  │ PCs /   │  │ Devices │  │         │
+        └─────────┘    └─────────┘  │ Devices │  └─────────┘  └─────────┘
+                                    └─────────┘
+             │              │            │            │
+             │              │            │            │
+            📶             📶           📶           📶
+          ┌──┴───┐       ┌──┴───┐    ┌──┴───┐     ┌──┴────┐
+          │  AP  │       │  AP  │    │  AP  │     │  AP   │
+          └──┬───┘       └──┬───┘    └──┬───┘     └──┬────┘
+             │              │            │             │
+        Wireless        Wireless     Wireless      Wireless
+        Clients         Clients      Clients       Clients
