@@ -1,288 +1,200 @@
-\# Cisco Networking \& Security Labs 🛡️
+# 🛡️ Cisco Networking & Security Labs
 
+> A hands-on cybersecurity and enterprise networking portfolio built with **Cisco Packet Tracer**, focused on network architecture, VLAN segmentation, routing, switching, security hardening, and SOC-relevant security controls.
 
+![Cisco](https://img.shields.io/badge/Cisco-Packet%20Tracer-1BA0D7?style=for-the-badge&logo=cisco&logoColor=white)
+![Networking](https://img.shields.io/badge/Networking-TCP%2FIP-blue?style=for-the-badge)
+![Security](https://img.shields.io/badge/Cybersecurity-Network%20Security-red?style=for-the-badge)
+![GitHub](https://img.shields.io/badge/GitHub-Portfolio-black?style=for-the-badge&logo=github)
 
-Hands-on Cisco networking and network security labs developed using
+---
 
-Cisco Packet Tracer.
+## 📌 About This Repository
 
+This repository contains a collection of hands-on **Cisco networking and network security labs** developed as part of my cybersecurity learning journey toward becoming a **SOC Analyst**.
 
+The labs progress from fundamental enterprise networking concepts to security-focused network architecture and hardening.
 
-This repository documents my progression from foundational enterprise
+The primary objective is to understand how enterprise networks are:
 
-networking to network security hardening and secure enterprise topology
+- Designed
+- Segmented
+- Configured
+- Secured
+- Monitored
+- Troubleshot
+- Verified
 
-design.
+The projects also provide practical exposure to concepts that are highly relevant to **SOC operations**, including network traffic, segmentation, access control, authentication, DHCP, STP security, endpoint protection, and security verification.
 
+---
 
+# 🎯 Learning Objectives
 
-\---
+Through these labs, I worked on:
 
+- Enterprise network topology design
+- VLAN segmentation
+- Access and trunk port configuration
+- Inter-VLAN routing
+- Router-on-a-stick
+- DHCP configuration
+- Static and dynamic addressing
+- Network device configuration
+- Switch security
+- Port security
+- MAC address security
+- STP security
+- Root Guard
+- BPDU Guard
+- PortFast
+- DHCP Snooping concepts
+- Dynamic ARP Inspection concepts
+- Unused-port hardening
+- Management VLAN design
+- Native VLAN security
+- WAN/ISP simulation
+- Network troubleshooting
+- Configuration verification
+- Security evidence collection
 
+---
 
-\## 📚 Lab Portfolio
+# 🏗️ Repository Projects
 
+## 01 — Basic Enterprise Network
 
+**Location:** `01-Basic-Enterprise-Network/`
 
-\### 01 — Basic Enterprise Network
+A foundational enterprise networking environment designed to build practical understanding of Cisco switching, VLANs, addressing, and connectivity.
 
+### Key Concepts
 
+- Cisco switching
+- VLAN configuration
+- Access ports
+- Trunking
+- IP addressing
+- Basic routing
+- Host connectivity
+- Network troubleshooting
 
-Foundational enterprise networking implementation covering:
+### Objective
 
+Build a functional enterprise network and establish reliable communication between network segments.
 
+---
 
-\- Cisco switching and routing
+# 🔐 02 — Enterprise Network Security
 
-\- VLAN configuration
+**Location:** `02-Enterprise-Network-Security/`
 
-\- IP addressing
+This project introduces security-focused configurations into an enterprise network environment.
 
-\- Inter-VLAN connectivity
+### Key Concepts
 
-\- Basic network troubleshooting
+- Network segmentation
+- Secure switch configuration
+- Access control
+- Device hardening
+- Secure management concepts
+- Network security fundamentals
+- Configuration verification
 
-\- Cisco Packet Tracer topology design
+### Objective
 
+Understand how basic enterprise networks can be strengthened against common network-level security risks.
 
+---
 
-\---
+# 🛡️ 03 — Enterprise Network Security Hardening
 
+**Location:** `03-Enterprise-Network-Security-Hardening/`
 
+This project focuses on practical switch-level security hardening.
 
-\### 02 — Enterprise Network Security
+### Security Controls
 
+- Port Security
+- Sticky MAC addresses
+- MAC address limits
+- Violation modes
+- PortFast
+- BPDU Guard
+- STP security
+- Root Guard
+- DHCP security concepts
+- Unused-port shutdown
+- VLAN isolation
+- Native VLAN security
+- Management VLAN
+- Endpoint protection
 
+### Objective
 
-Enterprise networking with security-focused configuration and
+Reduce the attack surface of an enterprise switching environment by applying layered security controls.
 
-segmentation.
+---
 
+# 🏢 04 — Enterprise Network Topology & Security
 
+**Location:** `04-Enterprise-Network-Topology-Security/`
 
-Key areas:
+This is the most comprehensive project in the repository.
 
+It combines enterprise topology design, VLAN segmentation, routing, DHCP, switching, security hardening, and verification into a single simulated environment.
 
+### Enterprise VLAN Architecture
 
-\- VLAN segmentation
+| VLAN | Department / Purpose | Network |
+|---|---|---|
+| 10 | HR | `192.168.10.0/24` |
+| 20 | IT | `192.168.20.0/24` |
+| 30 | Finance | `192.168.30.0/24` |
+| 40 | Sales | `192.168.40.0/24` |
+| 50 | Servers | `192.168.50.0/24` |
+| 99 | Management | `192.168.99.0/24` |
+| 999 | Unused / Blackhole / Native | Security VLAN |
 
-\- 802.1Q trunking
+### Default Gateways
 
-\- Inter-VLAN routing
+| VLAN | Gateway |
+|---|---|
+| HR | `192.168.10.1` |
+| IT | `192.168.20.1` |
+| Finance | `192.168.30.1` |
+| Sales | `192.168.40.1` |
+| Servers | `192.168.50.1` |
+| Management | `192.168.99.1` |
 
-\- DHCP
+---
 
-\- Access control
+# 🌐 Network Architecture
 
-\- SSH
-
-\- Network security fundamentals
-
-\- Connectivity verification
-
-
-
-\---
-
-
-
-\### 03 — Enterprise Network Security Hardening
-
-
-
-Network hardening lab focused on Layer 2 security and switch
-
-protection.
-
-
-
-Key security controls include:
-
-
-
-\- VLAN segmentation
-
-\- Secure trunking
-
-\- Native VLAN hardening
-
-\- STP security
-
-\- Port Security
-
-\- Sticky MAC addresses
-
-\- BPDU Guard
-
-\- DHCP Snooping
-
-\- Dynamic ARP Inspection
-
-\- Unused-port hardening
-
-\- Management VLAN
-
-\- Security verification and troubleshooting
-
-
-
-\---
-
-
-
-\### 04 — Enterprise Network Topology \& Security
-
-
-
-Advanced enterprise topology integrating networking and security
-
-controls into a larger simulated environment.
-
-
-
-\### VLAN Architecture
-
-
-
-| VLAN | Department | Network |
-
-|------|------------|---------|
-
-| 10 | HR | 192.168.10.0/24 |
-
-| 20 | IT | 192.168.20.0/24 |
-
-| 30 | Finance | 192.168.30.0/24 |
-
-| 40 | Sales | 192.168.40.0/24 |
-
-| 50 | Servers | 192.168.50.0/24 |
-
-| 99 | Management | 192.168.99.0/24 |
-
-| 999 | Native / Unused | Lab security VLAN |
-
-
-
-\### Inter-VLAN Gateways
-
-
-
-\- VLAN 10 → 192.168.10.1
-
-\- VLAN 20 → 192.168.20.1
-
-\- VLAN 30 → 192.168.30.1
-
-\- VLAN 40 → 192.168.40.1
-
-\- VLAN 50 → 192.168.50.1
-
-\- VLAN 99 → 192.168.99.1
-
-
-
-\### Security Focus
-
-
-
-\- Network segmentation
-
-\- Secure trunking
-
-\- STP security
-
-\- Port Security
-
-\- DHCP Snooping
-
-\- Dynamic ARP Inspection
-
-\- Management VLAN
-
-\- Unused-port isolation
-
-\- Network hardening
-
-\- Security verification
-
-
-
-\---
-
-
-
-\## 🧰 Technologies \& Tools
-
-
-
-\- Cisco Packet Tracer
-
-\- Cisco IOS
-
-\- VLANs
-
-\- 802.1Q Trunking
-
-\- Inter-VLAN Routing
-
-\- DHCP
-
-\- STP
-
-\- Port Security
-
-\- DHCP Snooping
-
-\- Dynamic ARP Inspection
-
-\- SSH
-
-\- ACL fundamentals
-
-\- NAT fundamentals
-
-\- TCP/IP
-
-\- Network troubleshooting
-
-
-
-\---
-
-
-
-\## 🔍 Verification \& Evidence
-
-
-
-Each lab contains configuration files, Packet Tracer projects,
-
-screenshots, and verification evidence where applicable.
-
-
-
-Examples of verification commands:
-
-
+The topology consists of:
 
 ```text
-
-show vlan brief
-
-show interfaces trunk
-
-show ip interface brief
-
-show ip route
-
-show ip dhcp binding
-
-show spanning-tree
-
-show port-security
-
-show ip dhcp snooping
-
-show ip arp inspection
-
+                         ┌──────────────┐
+                         │     ISP      │
+                         └──────┬───────┘
+                                │
+                           Simulated WAN
+                                │
+                         ┌──────┴───────┐
+                         │    EDGE-R1   │
+                         │ Router/Layer │
+                         │   3 Gateway   │
+                         └──────┬───────┘
+                                │
+                             Trunk
+                                │
+                         ┌──────┴───────┐
+                         │   CORE-SW    │
+                         │ Cisco 3650   │
+                         └──────┬───────┘
+                                │
+       ┌────────────┬───────────┼───────────┬────────────┐
+       │            │           │           │            │
+   ┌───┴───┐    ┌───┴───┐   ┌──┴───┐   ┌──┴────┐   ┌───┴────┐
+   │ HR-SW │    │ IT-SW │   │FIN-SW│   │SALES-SW│  │SERVER-SW│
+   └───────┘    └───────┘   └──────┘   └────────┘  └─────────┘
