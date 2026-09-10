@@ -1,0 +1,244 @@
+1)ERASE ALL DATA BEFORE CONFIGURED
+
+enable
+write erase
+delete flash:vlan.dat
+end
+
+2)ASSIGN NAME
+
+enable
+configure terminal
+hostname SERVER-SW1
+reload
+end
+
+
+3)VLAN CONFIGURATION
+
+enable
+configure terminal
+
+vlan 10
+ name HR
+exit
+
+vlan 20
+ name FINANCE
+exit
+
+vlan 30
+ name IT
+exit
+
+vlan 40
+ name SERVER
+exit
+
+vlan 50
+ name SOC
+exit
+
+vlan 60
+ name CORP-WIFI
+exit
+
+vlan 99
+ name MANAGEMENT
+exit
+
+vlan 999
+ name NATIVE-BLACKHOLE
+exit
+
+end
+
+3.1)VERIFY
+
+show vlan brief
+show ip interface brief
+show running-config | section interface Vlan
+
+4)PORT ASSIGNMENT
+
+enable
+configure terminal
+
+interface fa0/2-4
+ description SERVER
+ switchport mode access
+ switchport access vlan 40
+ spanning-tree portfast
+exit
+
+end
+write memory
+
+4.1)VERIFY
+
+show vlan brief
+
+5)TRUNKING
+
+enable
+configure terminal
+
+interface fa0/1
+ description TRUNK-TO-SERVER-SW1
+ switchport mode trunk
+ switchport trunk native vlan 999
+ switchport trunk allowed vlan 40,99,999
+ no shutdown
+exit
+
+end
+write memory
+
+5.1)VERIFY
+
+show cdp neighbors
+show interfaces trunk
+show interfaces status
+
+6)DYNAMIC ARP INSPECTION
+
+enable
+configure terminal
+
+ip arp inspection vlan 10,20,30,40,50,60,99
+
+end
+write memory
+
+enable
+configure terminal
+
+interface fa0/1
+ ip dhcp snooping trust
+ ip arp inspection trust
+exit
+
+end
+write memory
+
+6.1)VERIFY
+
+show ip arp inspection
+show ip arp inspection vlan 50
+show ip arp inspection interfaces
+show ip arp inspection statistics
+
+7)STP Security
+
+enable
+configure terminal
+
+interface fa0/2
+ spanning-tree portfast
+ spanning-tree bpduguard enable
+exit
+
+interface fa0/3
+ spanning-tree portfast
+ spanning-tree bpduguard enable
+exit
+
+interface fa0/4
+ spanning-tree portfast
+ spanning-tree bpduguard enable
+exit
+
+end
+write memory
+
+7.1)VERIFY PORTFAST
+
+show spanning-tree interface fa0/2 detail
+show spanning-tree interface fa0/3 detail
+show spanning-tree interface fa0/4 detail
+
+
+7.2)VERIFY BPDU GUARD
+
+show spanning-tree summary
+show running-config interface fa0/2
+show running-config interface fa0/3
+show running-config interface fa0/4
+
+
+show spanning-tree
+
+8)PORT SECURITY
+
+enable
+configure terminal
+
+interface fa0/2
+ switchport mode access
+ switchport access vlan 40
+ switchport port-security
+ switchport port-security maximum 1
+ switchport port-security mac-address sticky
+ switchport port-security violation shutdown
+exit
+
+interface fa0/3
+ switchport mode access
+ switchport access vlan 40
+ switchport port-security
+ switchport port-security maximum 1
+ switchport port-security mac-address sticky
+ switchport port-security violation shutdown
+exit
+
+
+interface fa0/4
+ switchport mode access
+ switchport access vlan 40
+ switchport port-security
+ switchport port-security maximum 1
+ switchport port-security mac-address sticky
+ switchport port-security violation shutdown
+exit
+
+end
+write memory
+
+8.1)VERIFY
+
+show port-security
+show port-security interface fa0/2
+||||||||||||||||||||||||||||||||||
+show port-security interface fa0/4
+show running-config interface fa0/2
+||||||||||||||||||||||||||||||||||
+show running-config interface fa0/4
+
+switchport port-security violation shutdown
+
+show interfaces status
+
+
+9)Unused-Port Hardening
+
+enable
+configure terminal
+
+interface range fa0/5 - 24
+ description UNUSED-PORTS
+ switchport mode access
+ switchport access vlan 999
+ shutdown
+exit
+
+end
+write memory
+
+
+9.1)VERIFY
+
+show vlan brief
+show interfaces status
+show running-config interface fa0/5-24
+
+

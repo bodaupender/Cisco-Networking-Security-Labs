@@ -1,0 +1,58 @@
+1)ERASE ALL DATA BEFORE CONFIGURED
+
+enable 
+write erase 
+reload
+end
+
+2)ASSIGN NAME
+
+enable
+hostname EDGE-R1
+end
+
+3)EDGE-R1 TO CORE-SW1 IP ADDRESSING
+
+enable
+configure terminal
+
+interface gigabitEthernet0/1
+ description LINK-TO-CORE-SW1
+ ip address 10.10.254.1 255.255.255.0
+ no shutdown
+exit
+
+end
+write memory
+
+3.1)EDGE-R1 TO ISP-R1
+
+enable
+configure terminal
+
+interface gigabitEthernet0/0/0
+ description Link-to-ISP-R1
+ ip address 203.0.113.2 255.255.255.252
+ no shutdown
+ exit
+
+end
+
+3.2)EDGE-R1 default route
+
+configure terminal
+
+ip route 0.0.0.0 0.0.0.0 203.0.113.1
+
+end
+
+
+
+3.2)VERIFY
+
+
+show vlan brief
+show ip interface brief
+show ip route
+
+show running-config interface gigabitEthernet0/1

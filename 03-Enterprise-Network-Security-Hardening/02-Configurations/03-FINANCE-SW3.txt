@@ -1,0 +1,334 @@
+1)ERASE ALL DATA BEFORE CONFIGURED
+
+enable
+write erase
+delete flash:vlan.dat
+reload
+end
+
+
+2)ASSIGN NAME
+
+enable
+configure terminal
+hostname FINANCE-SW3
+end
+
+
+3)VLAN CONFIGURATION
+
+enable
+configure terminal
+
+vlan 20
+ name FINANCE
+exit
+
+vlan 99
+ name MANAGEMENT
+exit
+
+vlan 999
+ name NATIVE-MGMT
+exit
+
+end
+
+3.1)VERIFY
+
+show vlan brief
+show ip interface brief
+show running-config | section interface Vlan
+
+
+4)PORT ASSIGNMENT
+
+enable
+configure terminal
+
+interface range fa0/2 - 7
+ description HR-Users
+ switchport mode access
+ switchport access vlan 20
+ spanning-tree portfast
+exit
+end
+write memory
+
+4.1)VERIFY
+
+show vlan brief
+
+5)TRUNKING
+
+enable
+configure terminal
+
+interface fa0/1
+ description TRUNK-TO-FINANCE-SW1
+ switchport mode trunk
+ switchport trunk native vlan 999
+ switchport trunk allowed vlan 20,99,999
+ no shutdown
+exit
+
+end
+write memory
+
+5.1)VERIFY
+
+show interfaces trunk
+show cdp neighbors
+
+6)DHCP Snooping
+
+enable
+configure terminal
+
+ip dhcp snooping
+ip dhcp snooping vlan 10,20,30,40,50,60,99
+
+end
+write memory
+
+6.1)Trust the uplink toward CORE
+
+configure terminal
+
+interface fa0/1
+ ip dhcp snooping trust
+exit
+
+end
+write memory
+
+
+6.2)DHCP rate limiting to endpoint ports
+
+configure terminal
+
+interface fa0/2
+ ip dhcp snooping limit rate 10
+exit
+
+interface fa0/3
+ ip dhcp snooping limit rate 10
+exit
+
+interface fa0/4
+ ip dhcp snooping limit rate 10
+exit
+
+
+interface fa0/5
+ ip dhcp snooping limit rate 10
+exit
+
+
+interface fa0/6
+ ip dhcp snooping limit rate 10
+exit
+
+
+interface fa0/7
+ ip dhcp snooping limit rate 10
+exit
+
+
+end
+write memory
+
+
+6.3)VERIFY
+
+show cdp neighbors
+show interfaces status
+show ip dhcp snooping
+show ip dhcp snooping binding
+
+7)DYNAMIC ARP INSPECTION
+
+enable
+configure terminal
+
+ip arp inspection vlan 10,20,30,40,50,60,99
+
+end
+write memory
+
+enable
+configure terminal
+
+interface fa0/1
+ ip dhcp snooping trust
+ ip arp inspection trust
+exit
+
+end
+write memory
+
+7.1)VERIFY
+
+show ip arp inspection
+show ip arp inspection vlan 50
+show ip arp inspection interfaces
+show ip arp inspection statistics
+
+9)STP Security
+
+enable
+configure terminal
+
+interface fa0/2
+ spanning-tree portfast
+ spanning-tree bpduguard enable
+exit
+
+interface fa0/3
+ spanning-tree portfast
+ spanning-tree bpduguard enable
+exit
+
+interface fa0/4
+ spanning-tree portfast
+ spanning-tree bpduguard enable
+exit
+
+interface fa0/5
+ spanning-tree portfast
+ spanning-tree bpduguard enable
+exit
+
+interface fa0/6
+ spanning-tree portfast
+ spanning-tree bpduguard enable
+exit
+
+interface fa0/7
+ spanning-tree portfast
+ spanning-tree bpduguard enable
+exit
+
+end
+write memory
+
+9.1)VERIFY PORTFAST
+
+show spanning-tree interface fa0/2 detail
+show spanning-tree interface fa0/3 detail
+show spanning-tree interface fa0/4 detail
+show spanning-tree interface fa0/5 detail
+show spanning-tree interface fa0/6 detail
+show spanning-tree interface fa0/7 detail
+
+9.2)VERIFY BPDU GUARD
+
+show spanning-tree summary
+show running-config interface fa0/2
+show running-config interface fa0/3
+show running-config interface fa0/4
+show running-config interface fa0/5
+show running-config interface fa0/6
+show running-config interface fa0/7
+
+show spanning-tree
+
+10)PORT SECURITY
+
+enable
+configure terminal
+
+interface fa0/2
+ switchport mode access
+ switchport access vlan 20
+ switchport port-security
+ switchport port-security maximum 1
+ switchport port-security mac-address sticky
+ switchport port-security violation shutdown
+exit
+
+interface fa0/3
+ switchport mode access
+ switchport access vlan 20
+ switchport port-security
+ switchport port-security maximum 1
+ switchport port-security mac-address sticky
+ switchport port-security violation shutdown
+exit
+
+interface fa0/4
+ switchport mode access
+ switchport access vlan 20
+ switchport port-security
+ switchport port-security maximum 1
+ switchport port-security mac-address sticky
+ switchport port-security violation shutdown
+exit
+
+interface fa0/5
+ switchport mode access
+ switchport access vlan 20
+ switchport port-security
+ switchport port-security maximum 1
+ switchport port-security mac-address sticky
+ switchport port-security violation shutdown
+exit
+
+interface fa0/6
+ switchport mode access
+ switchport access vlan 20
+ switchport port-security
+ switchport port-security maximum 1
+ switchport port-security mac-address sticky
+ switchport port-security violation shutdown
+exit
+
+interface fa0/7
+ switchport mode access
+ switchport access vlan 20
+ switchport port-security
+ switchport port-security maximum 1
+ switchport port-security mac-address sticky
+ switchport port-security violation shutdown
+exit
+
+end
+write memory
+
+10.1)VERIFY
+
+show port-security
+show port-security interface fa0/2
+||||||||||||||||||||||||||||||||||
+show port-security interface fa0/7
+
+show running-config interface fa0/2
+||||||||||||||||||||||||||||||||||
+show running-config interface fa0/7
+
+switchport port-security violation shutdown
+
+show interfaces status
+
+
+7)Unused-Port Hardening
+
+enable
+configure terminal
+
+interface range fa0/8 - 24
+ description UNUSED-PORTS
+ switchport mode access
+ switchport access vlan 999
+ shutdown
+exit
+
+end
+write memory
+
+
+7.1)VERIFY
+
+show vlan brief
+show interfaces status
+show running-config interface fa0/8-24

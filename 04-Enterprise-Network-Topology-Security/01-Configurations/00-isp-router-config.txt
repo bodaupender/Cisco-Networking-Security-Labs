@@ -1,0 +1,30 @@
+enable
+configure terminal
+hostname ISP-R1
+enable secret <REDACTED>
+enable
+configure terminal
+
+interface gigabitEthernet0/0/0
+ no ip address
+ no shutdown
+exit
+
+interface gigabitEthernet0/0/1
+ ip address 203.0.113.1 255.255.255.252
+ no shutdown
+exit
+
+end
+copy running-config startup-config
+interface loopback 0
+ description SIMULATED-INTERNET
+ ip address 8.8.8.8 255.255.255.255
+exit
+ip route 192.168.0.0 255.255.0.0 203.0.113.2
+end
+
+
+copy running-config | startup-config
+
+write memory

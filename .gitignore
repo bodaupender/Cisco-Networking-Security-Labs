@@ -1,0 +1,30 @@
+# Windows
+Thumbs.db
+Desktop.ini
+
+# Editor / IDE
+.vscode/
+.idea/
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.swp
+*~
+
+# OS / application cache
+.DS_Store
+
+# Credentials / secrets
+.env
+.env.*
+*.pem
+*.key
+*.p12
+*.pfx
+
+# Archives
+*.zip
+*.rar
+*.7z

@@ -1,0 +1,139 @@
+SOC-ANALYST PORTFOLIO
+SOC-ANALYST/
+│
+├── README.md
+├── .gitignore
+│
+├── 01-NETWORKING/
+├── 02-WINDOWS/
+├── 03-LINUX/
+├── 04-NETWORK-SECURITY/
+├── 05-SOC-LAB/
+├── 06-SIEM/
+├── 07-INCIDENT-RESPONSE/
+├── 08-CTF/
+├── 09-DATA-ANALYSIS/
+├── 10-SCRIPTS/
+│
+└── 13-PORTFOLIO/
+
+
+
+03-Enterprise-Network-Security-Hardening/
+│
+├── README.md
+│
+├── 00-Project-Files/
+│   └── Enterprise-Network-Security-Hardening.pkt
+│
+├── 01-Documentation/
+│   ├── Network-Design.md
+│   ├── VLAN-IP-Addressing.md
+│   ├── Security-Controls.md
+│   └── Verification-Results.md
+│
+├── 02-Configurations/
+│   ├── CORE-SW1.txt
+│   ├── EDGE-R1.txt
+│   ├── HR-SW4.txt
+│   ├── FINANCE-SW3.txt
+│   ├── IT-SW2.txt
+│   ├── SOC-SW1.txt
+│   └── SERVER-SW1.txt
+│
+├── 03-Topology/
+│   └── Network-Topology.png
+│
+├── 04-Screenshots/
+│   ├── 01-VLANs/
+│   ├── 02-DHCP/
+│   ├── 03-Trunking/
+│   ├── 04-DHCP-Snooping/
+│   ├── 05-DAI/
+│   ├── 06-STP-Security/
+│   ├── 07-Port-Security/
+│   └── 08-Connectivity/
+│
+└── 05-Reports/
+    └── Security-Hardening-Report.md
+
+
+             Devices involved
+
+
+                    ISP
+                     |
+                  G0/0
+                 EDGE-R1
+                  G0/1
+             10.10.254.1
+                     |
+                     |
+                CORE-SW1
+             10.10.254.2
+              /    |    \
+             /     |     \
+       SOC-SW1  SERVER-SW1  Access switches
+         |          |            |
+      VLAN 50     VLAN 40     VLAN 10/20/30/60
+
+
+
+
+
+
+
+
+| Phase  | Configuration                | Main purpose                                          |
+| ------ | ---------------------------- | ----------------------------------------------------- |
+| **1**  | Device basic configuration   | Hostnames and clean baseline                          |
+
+| **2**  | VLAN configuration           | Separate departments/security zones                   |
+
+| **3**  | IP addressing / SVI          | Give VLANs their gateways and management addressing   |
+
+| **4**  | Port assignment              | Put department devices into the correct VLANs         |
+
+| **5**  | Trunking                     | Carry required VLANs between network devices          |
+
+| **6**  | EDGE-R1 routing              | Connect the internal network to the edge/ISP          |
+
+| **7**  | DHCP                         | Automatically assign IP addresses to endpoints        |
+
+| **8**  | DHCP Snooping                | Prevent rogue DHCP servers                            |
+
+| **9**  | Dynamic ARP Inspection (DAI) | Protect against ARP spoofing                          |
+
+| **10** | STP Security                 | PortFast + BPDU Guard and STP protection              |
+
+| **11** | Port Security                | Restrict unauthorized devices on access ports         |
+
+| **12** | Unused-port hardening        | Shutdown unused interfaces and place them in VLAN 999 |
+
+| **13** | Connectivity verification    | DHCP, VLAN, inter-VLAN, router and Internet/ISP tests |
+
+| **14** | Security verification        | Verify Snooping, DAI, STP and Port Security           |
+
+| **15** | Evidence/screenshots         | Capture the required proof for your portfolio         |
+
+| **16** | Documentation                | Write the project report/readme                       |
+
+| **17** | GitHub                       | Add the final project to your clean SOC portfolio     |
+
+
+VLAN architecture
+
+VLAN 10  = HR          -->10.10.10.0/24
+VLAN 20  = FINANCE     -->10.10.20.0/24
+VLAN 30  = IT          -->10.10.30.0/24
+VLAN 40  = SERVER      -->10.10.40.0/24
+VLAN 50  = SOC         -->10.10.50.0/24
+VLAN 60  = CORP-WIFI   -->10.10.60.0/24
+VLAN 99  = MANAGEMENT  -->10.10.99.0/24
+VLAN 999 = NATIVE-MGMT / unused
+
+EDGE-R1 ↔ CORE-SW1
+
+EDGE-R1  =             -->10.10.254.1
+CORE-SW1 =             -->10.10.254.2
+Network  =             -->10.10.254.0/24

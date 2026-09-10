@@ -1,0 +1,9 @@
+1. EDGE-R1:    ping 203.0.113.1        ! Internet side
+2. EDGE-R1:    ping 192.168.10.1       ! own sub-if (should reply)
+3. CORE-SW:    ping 192.168.99.1       ! gateway
+4. PC (HR):    ipconfig /renew         ! DHCP from EDGE-R1
+5. PC (HR):    ping 192.168.30.21      ! inter-VLAN (Finance)
+6. PC (HR):    ping 192.168.50.10      ! DNS server
+7. PC (HR):    nslookup www.company.local
+8. PC (HR):    ping 8.8.8.8            ! Internet via NAT
+9. PC (HR):    ssh -l admin 192.168.99.11

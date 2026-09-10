@@ -1,0 +1,12 @@
+1)ISP-R1 TO EDGE-R1
+
+enable
+configure terminal
+
+interface gigabitEthernet0/0/0
+ description Link-to-EDGE-R1
+ ip address 203.0.113.1 255.255.255.252
+ no shutdown
+ exit
+
+end

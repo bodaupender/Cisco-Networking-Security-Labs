@@ -1,0 +1,105 @@
+enable
+configure terminal
+hostname EDGE-R1
+no ip domain-lookup
+service password-encryption
+enable secret <REDACTED>
+banner motd #AUTHORIZED ACCESS ONLY#
+line console 0
+ password <REDACTED>
+ login
+ exec-timeout 5 0
+ logging synchronous
+exit
+username admin privilege 15 secret <REDACTED>
+ip domain-name company.local
+crypto key generate rsa modulus 1024
+line vty 0 4
+ transport input ssh
+ login local
+ exec-timeout 5 0
+exit
+
+! ===== Internet side =====
+interface gig0/0/0
+ description TO-ISP-CLOUD
+ ip address 203.0.113.2 255.255.255.252
+ no shutdown
+
+! ===== LAN side - Router on a Stick =====
+interface gig0/0/1
+ description TRUNK-TO-CORE-SW
+ no ip address
+ no shutdown
+interface gig0/0/1.10
+ encapsulation dot1Q 10
+ ip address 192.168.10.1 255.255.255.0
+interface gig0/0/1.20
+ encapsulation dot1Q 20
+ ip address 192.168.20.1 255.255.255.0
+interface gig0/0/1.30
+ encapsulation dot1Q 30
+ ip address 192.168.30.1 255.255.255.0
+interface gig0/0/1.40
+ encapsulation dot1Q 40
+ ip address 192.168.40.1 255.255.255.0
+interface gig0/0/1.50
+ encapsulation dot1Q 50
+ ip address 192.168.50.1 255.255.255.0
+interface gig0/0/1.99
+ encapsulation dot1Q 99
+ ip address 192.168.99.1 255.255.255.0
+exit
+
+! ===== Default route to Internet =====
+ip route 0.0.0.0 0.0.0.0 203.0.113.1
+
+! ===== NAT for Internet access =====
+access-list 100 permit ip 192.168.10.0 0.0.0.255 any
+access-list 100 permit ip 192.168.20.0 0.0.0.255 any
+access-list 100 permit ip 192.168.30.0 0.0.0.255 any
+access-list 100 permit ip 192.168.40.0 0.0.0.255 any
+access-list 100 permit ip 192.168.50.0 0.0.0.255 any
+access-list 100 permit ip 192.168.99.0 0.0.0.255 any
+interface gig0/0/0
+ ip nat outside
+interface gig0/0/1
+ ip nat inside
+exit
+ip nat inside source list 100 interface gig0/0/0 overload
+
+! ===== DHCP (all pools on ONE device the router) =====
+ip dhcp excluded-address 192.168.10.1 192.168.10.20
+ip dhcp excluded-address 192.168.20.1 192.168.20.20
+ip dhcp excluded-address 192.168.30.1 192.168.30.20
+ip dhcp excluded-address 192.168.40.1 192.168.40.20
+ip dhcp pool HR
+ network 192.168.10.0 255.255.255.0
+ default-router 192.168.10.1
+ dns-server 192.168.50.10
+ip dhcp pool IT
+ network 192.168.20.0 255.255.255.0
+ default-router 192.168.20.1
+ dns-server 192.168.50.10
+ip dhcp pool FINANCE
+ network 192.0 255.255.255.0
+ default-router 192.168.30.1
+ dns-server 192.168.50.10
+ip dhcp pool SALES
+ network 192.168.40.0 255.255.255.0
+ default-router 192.168.40.1
+ dns-server 192.168.50.10
+exit
+
+! ===== Syslog =====
+logging host 192.168.50.12
+end
+copy running-config startup-config
+
+
+VERIFY:
+
+show ip interface brief        ! all sub-ifs up, correct IPs
+show ip route                  ! S* via 203.0.113.1
+show ip dhcp pool
+ping 203.0.113.1               ! needs ISP side ready

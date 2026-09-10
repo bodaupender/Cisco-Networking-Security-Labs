@@ -1,0 +1,109 @@
+enable
+configure terminal
+hostname HR-SW                          
+no ip domain-lookup
+service password-encryption
+enable secret <REDACTED>
+banner motd #AUTHORIZED ACCESS ONLY#
+line console 0
+ password <REDACTED>
+ login
+ exec-timeout 5 0
+ logging synchronous
+exit
+username admin privilege 15 secret <REDACTED>
+ip domain-name company.local
+crypto key generate rsa modulus 1024
+line vty 0 4
+ transport input ssh
+ login local
+ exec-timeout 5 0
+exit
+
+! ===== VLANs =====
+vlan 10
+ name HR                                
+vlan 99
+ name MANAGEMENT
+vlan 999
+ name UNUSED_BLACKHOLE
+exit
+
+! ===== Trunk to CORE-SW =====
+interface gig1/0/1
+ switchport mode trunk
+ switchport trunk native vlan 999
+ switchport trunk allowed vlan 10,20,30,40,50,99
+exit
+
+! ===== Access ports (users) =====
+interface range gig1/0/2-9
+ switchport mode access
+ switchport access vlan 10 
+             
+exit
+
+! ===== Management =====
+interface vlan 99
+ ip address 192.168.99.11 255.255.255.0    
+ no shutdown
+exit
+ip default-gateway 192.168.99.1
+
+! ===== DHCP Snooping =====
+ip dhcp snooping
+ip dhcp snooping vlan 10,20,30,40,50
+no ip dhcp snooping information option
+interface gig1/0/1
+ ip dhcp snooping trust
+exit
+
+! ===== STP security =====
+spanning-tree mode rapid-pvst
+interface range gig1/0/2-9
+ spanning-tree portfast
+ spanning-tree bpduguard enable
+exit
+interface gig1/0/1
+ spanning-tree guard root
+exit
+
+! ===== Port Security =====
+interface range gig1/0/2-9
+ switchport port-security
+ switchport port-security maximum 1
+ switchport port-security mac-address sticky
+ switchport port-security violation restrict
+exit
+
+! ===== Syslog =====
+logging host 192.168.50.12
+
+! ===== Unused ports =====
+interface range gig1/0/10-24 , gig1/1/1-4
+ shutdown
+ switchport mode access
+ switchport access vlan 999
+ description UNUSED-HARDENED
+exit
+end
+copy running-config startup-config
+
+
+
+Per-switch substitution table:
+
+Switch	        hostname	VLAN	access vlan	mgmt IP
+HR-SW	        HR-SW	        10	10	        192.168.99.11
+IT-SW	        IT-SW	        20	20	        192.168.99.12
+FINANCE-SW	FINANCE-SW	30	30	        192.168.99.13
+SALES-SW	SALES-SW	40	40	        192.168.99.14
+
+VERIFY (each):
+
+show vlan brief
+show interfaces trunk
+show ip dhcp snooping
+show ip arp inspection
+show port-security
+show spanning-tree summary

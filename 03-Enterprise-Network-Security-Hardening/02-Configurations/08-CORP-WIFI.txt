@@ -1,0 +1,165 @@
+1)ERASE ALL DATA BEFORE CONFIGURED
+
+write erase 
+delete flash:vlan.dat
+reload
+end
+
+
+2)ASSIGN NAME
+
+enable
+configure terminal
+hostname CORP-WIFI
+end
+
+3)VLAN CONFIGURATION
+
+enable
+configure terminal
+
+vlan 60 
+ name CORP-WIFI
+exit
+
+vlan 99
+ name MANAGEMENT
+exit
+
+vlan 999
+ name NATIVE-MGMT
+exit
+
+end
+
+exit
+write memory
+
+
+3.1)VERIFY
+
+show vlan brief
+show ip interface brief
+show running-config | section interface Vlan
+
+4)SWITCHPORT ACCESS
+
+enable
+configure terminal
+
+interface fa0/6
+ description CORP-WIFI-AP
+ switchport mode access
+ switchport access vlan 60
+ spanning-tree portfast
+exit
+
+end
+write memory
+
+
+5)DHCP Snooping
+
+enable
+configure terminal
+
+ip dhcp snooping
+ip dhcp snooping vlan 10,20,30,40,50,60,99
+
+end
+write memory
+5.1)Trust the uplink toward CORE
+
+configure terminal
+
+interface fa0/1
+ ip dhcp snooping trust
+exit
+
+end
+write memory
+
+
+5.2)DHCP rate limiting to endpoint ports
+
+configure terminal
+interface <CORP-WIFI>
+ ip dhcp snooping limit rate 10
+exit
+
+end
+write memory
+
+5.3)VERIFY
+
+show cdp neighbors
+show interfaces status
+show ip dhcp snooping
+show ip dhcp snooping binding
+
+5.4)VERIFY
+
+show vlan brief
+show cdp neighbors
+show ip dhcp snooping
+show ip dhcp snooping binding
+
+6)DYNAMIC ARP INSPECTION
+
+enable
+configure terminal
+
+ip arp inspection vlan 10,20,30,40,50,60,99
+
+end
+write memory
+
+enable
+configure terminal
+
+interface fa0/1
+ ip dhcp snooping trust
+ ip arp inspection trust
+exit
+
+end
+write memory
+
+6.1)VERIFY
+
+show ip arp inspection
+show ip arp inspection vlan 50
+show ip arp inspection interfaces
+show ip arp inspection statistics
+
+
+7)STP SECURITY
+
+enable
+configure terminal
+
+interface fa0/6
+ spanning-tree portfast
+ spanning-tree bpduguard enable
+exit
+
+end
+write memory
+
+
+7.1)VERIFY
+
+
+8)PORT SECURITY
+
+enable
+configure terminal
+
+interface fa0/6
+ switchport mode access
+ switchport access vlan 60
+ switchport port-security
+ switchport port-security maximum 20
+ switchport port-security mac-address sticky
+ switchport port-security violation restrict
+exit

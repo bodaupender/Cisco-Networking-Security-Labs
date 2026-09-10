@@ -1,0 +1,338 @@
+1)ERASE ALL DATA BEFORE CONFIGURED
+
+enable
+write erase
+delete flash:vlan.dat
+reload
+end
+
+2)ASSIGN NAME
+
+enable
+configure terminal
+hostname CORE-SW1
+end
+
+
+
+3)VLAN CONFIGURATION
+
+
+enable
+configure terminal
+
+vlan 10
+ name HR
+exit
+
+vlan 20
+ name FINANCE
+exit
+
+vlan 30
+ name IT
+exit
+
+vlan 40
+ name SERVER
+exit
+
+vlan 50
+ name SOC
+exit
+
+vlan 60
+ name CORP-WIFI
+exit
+
+vlan 99
+ name MANAGEMENT
+exit
+
+vlan 999
+ name NATIVE-BLACKHOLE
+exit
+
+end
+
+4)Layer-3 routing on CORE-SW1
+
+enable
+configure terminal
+
+ip routing
+
+
+4.1)SVI for VLAN 10 — HR
+
+interface vlan 10
+ description HR-GATEWAY
+ ip address 10.10.10.1 255.255.255.0
+ no shutdown
+exit
+
+4.2)VLAN 20 — FINANCE
+
+interface vlan 20
+ description FINANCE-GATEWAY
+ ip address 10.10.20.1 255.255.255.0
+ no shutdown
+exit
+
+4.3)VLAN 30 — IT
+
+interface vlan 30
+ description IT-GATEWAY
+ ip address 10.10.30.1 255.255.255.0
+ no shutdown
+exit
+
+4.4)VLAN 40 — SERVER
+
+interface vlan 40
+ description SERVER-GATEWAY
+ ip address 10.10.40.1 255.255.255.0
+ no shutdown
+exit
+
+4.5)VLAN 50 — SOC
+
+interface vlan 50
+ description SOC-GATEWAY
+ ip address 10.10.50.1 255.255.255.0
+ no shutdown
+exit
+
+4.6)VLAN 60 — CORP-WIFI
+
+interface vlan 60
+ description CORP-WIFI-GATEWAY
+ ip address 10.10.60.1 255.255.255.0
+ no shutdown
+exit
+
+4.7)VLAN 99 — MANAGEMENT
+
+interface vlan 99
+ description MANAGEMENT-GATEWAY
+ ip address 10.10.99.1 255.255.255.0
+ no shutdown
+exit
+
+4.8)
+
+enable
+configure terminal
+
+interface fastEthernet0/4
+ description LINK-TO-EDGE-R1
+ no switchport
+ ip address 10.10.254.2 255.255.255.0
+ no shutdown
+exit
+
+end
+write memory
+
+
+4.8)VERIFY
+
+show vlan brief
+show ip interface brief
+show ip route
+show running-config | section interface Vlan
+
+5)TRUNKING
+
+enable
+configure terminal
+
+interface fa0/1
+ description TRUNK-TO-SOC-SW1
+ switchport mode trunk
+ switchport trunk native vlan 999
+ switchport trunk allowed vlan 50,99,999
+ no shutdown
+exit
+
+end
+write memory
+
+enable
+configure terminal
+
+interface fa0/3
+ description TRUNK-TO-SERVER-SW1
+ switchport mode trunk
+ switchport trunk native vlan 999
+ switchport trunk allowed vlan 40,99,999
+ no shutdown
+exit
+
+end
+write memory
+
+
+enable
+configure terminal
+
+interface fa0/2
+ description TRUNK-TO-IT-SW1
+ switchport mode trunk
+ switchport trunk native vlan 999
+ switchport trunk allowed vlan 30,99,999
+ no shutdown
+exit
+
+end
+write memory
+
+enable
+configure terminal
+
+interface fa0/5
+ description TRUNK-TO-HR-SW1
+ switchport mode trunk
+ switchport trunk native vlan 999
+ switchport trunk allowed vlan 10,99,999
+ no shutdown
+exit
+
+end
+write memory
+
+enable
+configure terminal
+
+interface fa0/7
+ description TRUNK-TO-FINANCE-SW1
+ switchport mode trunk
+ switchport trunk native vlan 999
+ switchport trunk allowed vlan 20,99,999
+ no shutdown
+exit
+
+end
+write memory
+
+
+enable
+configure terminal
+
+interface fa0/6
+ description CORP-WIFI-AP
+ switchport mode access
+ switchport access vlan 60
+ spanning-tree portfast
+exit
+
+end
+write memory
+
+5.1)VERIFY
+show interfaces trunk
+show cdp neighbors
+
+6)DHCP
+
+6.1)DHCP Address Reservation  
+[.1  = VLAN gateway
+.2-.20 = reserved/static infrastructure
+.21-.254 = DHCP client range]
+
+enable
+configure terminal
+
+ip dhcp excluded-address 10.10.10.1 10.10.10.20
+ip dhcp excluded-address 10.10.20.1 10.10.20.20
+ip dhcp excluded-address 10.10.30.1 10.10.30.20
+ip dhcp excluded-address 10.10.50.1 10.10.50.20
+ip dhcp excluded-address 10.10.60.1 10.10.60.20
+
+end
+
+
+6.2)VERIFY
+
+show ip dhcp excluded-address
+
+6.3)Create DHCP pool for HR
+
+enable
+configure terminal
+
+ip dhcp pool VLAN10-HR
+ network 10.10.10.0 255.255.255.0
+ default-router 10.10.10.1
+ dns-server 8.8.8.8
+exit
+
+6.4)FINANCE
+
+
+ip dhcp pool VLAN20-FINANCE
+ network 10.10.20.0 255.255.255.0
+ default-router 10.10.20.1
+ dns-server 8.8.8.8
+exit
+
+6.5)IT
+
+ip dhcp pool VLAN30-IT
+ network 10.10.30.0 255.255.255.0
+ default-router 10.10.30.1
+ dns-server 8.8.8.8
+exit
+
+6.6)SOC
+
+ip dhcp pool VLAN50-SOC
+ network 10.10.50.0 255.255.255.0
+ default-router 10.10.50.1
+ dns-server 8.8.8.8
+exit
+
+6.7)CORP-WIFI
+
+ip dhcp pool VLAN60-CORP-WIFI
+ network 10.10.60.0 255.255.255.0
+ default-router 10.10.60.1
+ dns-server 8.8.8.8
+exit
+
+end
+write memory
+
+6.8)
+
+show ip dhcp pool
+
+show running-config | section dhcp
+
+
+7)Unused-Port Hardening
+
+enable
+configure terminal
+
+interface range fa0/8 - 24
+ description UNUSED-PORTS
+ switchport mode access
+ switchport access vlan 999
+ shutdown
+exit
+
+end
+write memory
+
+
+7.1)VERIFY
+
+show vlan brief
+show interfaces status
+show running-config interface fa0/8-24
+
+
+
+
+

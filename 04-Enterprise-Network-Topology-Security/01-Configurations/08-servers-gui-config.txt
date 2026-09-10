@@ -1,0 +1,26 @@
+Static IPs (Desktop → IP Configuration):
+
+Server	      Port	IP	         Gateway	DNS
+SRV-DNS       gig1/0/2	192.168.50.10	192.168.50.1	127.0.0.1
+SRV-WEB	      gig1/0/3	192.168.50.11	192.168.50.1	192.168.50.10
+SRV-SYSLOG    gig1/0/4	192.168.50.12	192.168.50.1	192.168.50.10
+SRV-AAA	      gig1/0/5	192.168.50.13	192.168.50.1	192.168.50.10
+SRV-DNS → Services → DNS → ON + A records:
+| www.company.local    | → 192.168.50.11 |
+| syslog.company.local | → 192.168.50.12 |
+| aaa.company.local    | → 192.168.50.13 |
+
+SRV-WEB → Services → HTTP → ON (HTTP + HTTPS)
+
+SRV-SYSLOG → Services → SYSLOG → ON
+
+SRV-AAA → Services → AAA → ON + client entries:
+
+Client	          IP	        Secret
+HR-SW	        192.168.99.11	Radius@123
+IT-SW	        192.168.99.12	Radius@123
+FINANCE-SW	192.168.99.13	Radius@123
+SALES-SW	192.168.99.14	Radius@123
+SERVERS-SW	192.168.99.15	Radius@123
+EDGE-R1	        192.168.99.1	Radius@123
+Users: netadmin / Net@1234

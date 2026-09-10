@@ -1,0 +1,13 @@
+| Security/configuration | Verification command                         |
+| ---------------------- | -------------------------------------------- |
+| VLANs                  | `show vlan brief`                            |
+| Trunking               | `show interfaces trunk`                      |
+| DHCP                   | `show ip dhcp binding`                       |
+| DHCP Snooping          | `show ip dhcp snooping`                      |
+| DHCP bindings          | `show ip dhcp snooping binding`              |
+| DAI                    | `show ip arp inspection`                     |
+| STP Security           | `show spanning-tree interface ... detail`    |
+| Port Security          | `show port-security interface ...`           |
+| Unused ports           | `show vlan brief` + `show interfaces status` |
+| Connectivity           | `ping`                                       |
+| Routing                | `show ip route`                              |
